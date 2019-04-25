@@ -6,8 +6,7 @@ import org.pharmgkb.io.ncbi.ApiException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Testing the {@link NcbiRefsnp}
@@ -47,5 +46,14 @@ public class NcbiRefsnpTest {
     List<String> genes = ncbiRefsnp.getGenes();
     assertEquals(1, genes.size());
     assertTrue(genes.contains("HLA-DQB1"));
+    
+    List<String> types = ncbiRefsnp.getSnpTypes().collect(Collectors.toList());
+    assertNotNull(types);
+    assertEquals(1, types.size());
+    
+    List<String> changes = ncbiRefsnp.getChangeClassifications().collect(Collectors.toList());
+    assertNotNull(changes);
+    assertEquals(1, changes.size());
+    assertTrue(changes.contains("missense_variant"));
   }
 }

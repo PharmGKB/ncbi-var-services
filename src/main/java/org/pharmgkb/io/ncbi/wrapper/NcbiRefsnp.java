@@ -2,16 +2,15 @@ package org.pharmgkb.io.ncbi.wrapper;
 
 import org.pharmgkb.io.ncbi.ApiException;
 import org.pharmgkb.io.ncbi.api.RefSnpApi;
-import org.pharmgkb.io.ncbi.model.GeneAnnotForAllele;
-import org.pharmgkb.io.ncbi.model.PlacementAnnotatedAllele;
-import org.pharmgkb.io.ncbi.model.RefsnpSnapshot;
-import org.pharmgkb.io.ncbi.model.Spdi;
+import org.pharmgkb.io.ncbi.model.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Wrapper around the {@link RefsnpSnapshot} API response object. This has a bunch of convenience methods that put data
@@ -147,4 +146,27 @@ public class NcbiRefsnp {
         + ":" + s.getPosition()
         + ":" + s.getDeletedSequence()
         + ":" + s.getInsertedSequence();
+  
+  public Stream<String> getSnpTypes() {
+    return getSnapshot().getPrimarySnapshotData().getAlleleAnnotations().stream()
+        .flatMap(a -> a.getAssemblyAnnotation().stream())
+        .flatMap(aa -> aa.getGenes().stream())
+        .flatMap(g -> g.getRnas().stream())
+        .flatMap(r -> r.getSequenceOntology().stream())
+        .map(SoTerm::getName)
+        .distinct()
+        .sorted();
+  }
+  
+  public Stream<String> getChangeClassifications() {
+    return getSnapshot().getPrimarySnapshotData().getAlleleAnnotations().stream()
+        .flatMap(a -> a.getAssemblyAnnotation().stream())
+        .flatMap(aa -> aa.getGenes().stream())
+        .flatMap(g -> g.getRnas().stream())
+        .filter(r -> !Objects.equals(r.getCodonAlignedTranscriptChange().getDeletedSequence(), r.getCodonAlignedTranscriptChange().getInsertedSequence()))
+        .flatMap(r -> r.getProtein().getSequenceOntology().stream())
+        .map(SoTerm::getName)
+        .distinct()
+        .sorted();
+  }
 }
