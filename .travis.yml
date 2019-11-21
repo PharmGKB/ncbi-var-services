@@ -9,8 +9,8 @@ before_install:
   - chmod a+x ./gradlew
 script:
   # test using maven
-  - mvn test
+  #   - mvn test
   # uncomment below to test using gradle
-  # - gradle test
+   - gradle test
   # uncomment below to test using sbt 
   # - sbt test
