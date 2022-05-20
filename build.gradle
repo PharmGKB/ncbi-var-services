@@ -1,24 +1,17 @@
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-
-group = 'org.pharmgkb'
-version = '1.0.0'
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.owasp.dependencycheck' version '6.5.0.1'
+}
+project.group = 'org.pharmgkb'
+project.version = '1.0.0'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
-
-apply plugin: 'java'
-apply plugin: 'maven'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
-
-install {
-    repositories.mavenInstaller {
-        pom.artifactId = 'ncbi-var-services'
-    }
-}
 
 task execute(type:JavaExec) {
     main = System.getProperty('mainClass')
@@ -26,11 +19,15 @@ task execute(type:JavaExec) {
 }
 
 dependencies {
-    compile 'io.swagger.core.v3:swagger-annotations:2.0.0'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
-    compile 'com.google.code.gson:gson:2.8.1'
-    compile 'io.gsonfire:gson-fire:1.8.3'
-    compile 'org.threeten:threetenbp:1.3.5'
-    testCompile 'junit:junit:4.12'
+    implementation (
+        [group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.0.0'],
+        [group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.5'],
+        [group: 'com.squareup.okhttp', name: 'logging-interceptor', version: '2.7.5'],
+        [group: 'com.google.code.gson', name: 'gson', version: '2.8.9'],
+        [group: 'io.gsonfire', name: 'gson-fire', version: '1.8.3'],
+        [group: 'org.threeten', name: 'threetenbp', version: '1.3.5'],
+    )
+    testImplementation (
+        [group: 'junit', name: 'junit', version: '4.13'],
+    )
 }
